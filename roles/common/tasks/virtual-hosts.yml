@@ -1,0 +1,15 @@
+# Azure subdomains (*.<MY_DOMAIN>.westeurope.cloudapp.azure.com) are not allowed at this time.
+# https://feedback.azure.com/forums/216843-virtual-machines/suggestions/6119382-subdomain-cloudapp-net-etc-rather-than-having-a
+# Workaround: Add the azure machine host to their /etc/hosts file.
+- name: create virtual hosts
+  template: src=virtualhost.j2
+    dest=/etc/apache2/sites-enabled/{{ item.name }}.{{ project.url }}.conf mode=0755
+  with_items: "{{ system_users }}"
+  notify: restart apache
+  become: yes
+
+# Virtual hosts plan B.
+- name: create links inside apache's document root to the users project/web folders
+  file: src=/home/{{ item.name }}/projects/{{ project.path }}/web dest=/var/www/html/{{ item.name }} state=link
+  with_items: "{{ system_users }}"
+  become: yes

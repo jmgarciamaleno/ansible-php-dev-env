@@ -1,0 +1,118 @@
+- name: /etc/apache2/conf-enabled/security.conf - ServerTokens Prod
+  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^ServerTokens' line='ServerTokens Prod'
+    backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/apache2/conf-enabled/security.conf - ServerSignature Off
+  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^ServerSignature' line='ServerSignature Off'
+    backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/apache2/conf-enabled/security.conf - TraceEnable Off
+  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^TraceEnable' line='TraceEnable Off'
+    backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/apache2/conf-enabled/security.conf - Header unset ETag
+  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^Header unset ETag'
+    line='Header unset ETag' backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/apache2/conf-enabled/security.conf - FileETag None
+  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^FileETag' line='FileETag None'
+    backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/apache2/mods-enabled/php5.conf - Enable php in html
+  blockinfile: dest=/etc/apache2/mods-enabled/php5.conf block={{ php_in_html }} backup=yes
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: enable apache2 mod_headers
+  apache2_module: name=headers state=present
+  become: yes
+  notify: restart apache
+
+- name: prepare the mod_security configuration
+  command: cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
+  become: yes
+
+- name: /etc/modsecurity/modsecurity.conf - SecRuleEngine On
+  lineinfile: dest=/etc/modsecurity/modsecurity.conf regexp='^SecRuleEngine' line='SecRuleEngine On'
+    backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/modsecurity/modsecurity.conf - SecRequestBodyLimit 16384000
+  lineinfile: dest=/etc/modsecurity/modsecurity.conf regexp='^SecRequestBodyLimit'
+    line='SecRequestBodyLimit 16384000' state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/modsecurity/modsecurity.conf - SecRequestBodyInMemoryLimit 16384000
+  lineinfile: dest=/etc/modsecurity/modsecurity.conf regexp='^SecRequestBodyInMemoryLimit'
+    line='SecRequestBodyInMemoryLimit 16384000' state=present
+  become: yes
+  notify: restart apache
+
+- name: get the Open Web Application Security Project Core Rule Set (OWASP CRS)
+  unarchive: src=https://github.com/SpiderLabs/owasp-modsecurity-crs/archive/master.zip
+    dest=/tmp/ copy=no
+  become: yes
+
+- name: copy the CRS to /etc/modsecurity/
+  shell: cp -r /tmp/owasp-modsecurity-crs-master/* /etc/modsecurity/
+  become: yes
+
+- name: prepare the modsecurity_crs configuration
+  command: cp /etc/modsecurity/modsecurity_crs_10_setup.conf.example
+    /etc/modsecurity/modsecurity_crs_10_setup.conf
+  become: yes
+
+- name: create base rules links
+  shell: ls /etc/modsecurity/base_rules | xargs -I {} ln -sf /etc/modsecurity/base_rules/{} /etc/modsecurity/activated_rules/{}
+  become: yes
+
+- name: create optional rules links
+  shell: ls /etc/modsecurity/optional_rules | xargs -I {} ln -sf /etc/modsecurity/optional_rules/{} /etc/modsecurity/activated_rules/{}
+  become: yes
+
+- name: add the rules to apache
+  lineinfile: dest=/etc/apache2/mods-available/security2.conf insertbefore='</IfModule>'
+    line='    Include /etc/modsecurity/activated_rules/*.conf' state=present
+  become: yes
+  notify: restart apache
+
+- name: create the apache mod_evasive log directory
+  file: path=/var/log/mod_evasive/ state=directory owner=www-data group=www-data mode=0755
+  become: yes
+
+- name: enable rules in /etc/apache2/mods-available/evasive.conf
+  replace: dest=/etc/apache2/mods-available/evasive.conf regexp='(^.*)#(.*$)' replace='\1\2'
+    backup=yes
+  become: yes
+  notify: restart apache
+
+- name: comment the DOSSystemCommand line
+  lineinfile: dest=/etc/apache2/mods-available/evasive.conf regexp='(^\s*)(DOSSystemCommand.*$)'
+    line='\1#\2' backrefs=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: set the DOSEmailNotify
+  lineinfile: dest=/etc/apache2/mods-available/evasive.conf regexp='(^\s*DOSEmailNotify\s*)'
+    line='\1josemanuel.garcia@unidadeditorial.es' backrefs=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: enable evasive mod in apache
+  file: src=/etc/apache2/mods-available/evasive.conf dest=/etc/apache2/mods-enabled/evasive.conf
+    state=link
+  become: yes
+  notify: restart apache

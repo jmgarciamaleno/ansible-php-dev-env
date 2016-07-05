@@ -1,0 +1,16 @@
+---
+# Vars.
+- include_vars: system-groups.yml
+- include_vars: system-users.yml
+- include_vars: project.yml
+- include_vars: network-security.yml
+- include_vars: php-in-html.yml
+
+# Tasks.
+- include: system-harden.yml
+- include: system-config.yml
+- include: installation.yml
+- include: iptables-harden.yml
+- include: php-harden.yml
+- include: apache-harden.yml
+- include: virtual-hosts.yml

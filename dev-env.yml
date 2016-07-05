@@ -1,0 +1,6 @@
+# Ansible - Generic develop environment playbook.
+# Edit the var files in roles/common/vars/* to configure the project, groups and users values.
+- hosts: dev-env
+
+  roles:
+    - common

@@ -1,0 +1,16 @@
+- name: disable ssh root access
+  lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line='PermitRootLogin no'
+    backup=yes state=present
+  notify: restart ssh
+  become: yes
+
+- name: limit su access to sudoers
+  shell: dpkg-statoverride --update --add root sudo 4750 /bin/su
+  ignore_errors: yes
+  become: yes
+
+- name: harden ip network security
+  blockinfile: dest=/etc/sysctl.d/10-network-security.conf block={{ network_security }} backup=yes
+    state=present
+  notify: restart procps
+  become: yes

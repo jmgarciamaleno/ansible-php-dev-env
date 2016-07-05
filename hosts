@@ -1,0 +1,9 @@
+# Ansible develop environment hosts file
+
+# Example to deploy in a local VM:
+#
+# [dev-env]
+# dev ansible_host=192.168.33.101 ansible_user=admin
+
+[dev-env]
+dev

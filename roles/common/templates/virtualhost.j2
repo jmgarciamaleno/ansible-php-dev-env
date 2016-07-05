@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+    DocumentRoot /home/{{ item.name }}/projects/{{ project.path }}/web
+    ServerName {{ item.name }}.{{ project.url }}
+    ServerAlias www.{{ item.name }}.{{ project.url }}
+
+    ServerSignature Off
+
+    ErrorLog ${APACHE_LOG_DIR}/{{ item.name }}-error.log
+    CustomLog ${APACHE_LOG_DIR}/{{ item.name }}-access.log combined
+
+    <Directory /home/{{ item.name }}/projects/{{ project.path }}/web>
+        Options +Indexes +Includes +FollowSymLinks +MultiViews +ExecCGI
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>

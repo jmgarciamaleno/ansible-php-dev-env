@@ -1,0 +1,28 @@
+- name: /etc/php5/apache2/php.ini - Add exec,system,shell_exec,passthru to disable_functions
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='(^disable_functions.*,$)'
+    line='\1exec,system,shell_exec,passthru' backrefs=yes backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/apache2/php.ini - expose_php = Off
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^expose_php' line='expose_php = Off' state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/apache2/php.ini - display_errors = Off
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^display_errors' line='display_errors = Off'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/apache2/php.ini - track_errors = Off
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^track_errors' line='track_errors = Off'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/apache2/php.ini - html_errors = Off
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^html_errors' line='html_errors = Off'
+    state=present
+  become: yes
+  notify: restart apache

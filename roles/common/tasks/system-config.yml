@@ -1,0 +1,25 @@
+- name: configure locales
+  locale_gen: name=es_ES.UTF-8 state=present
+  become: yes
+
+- name: create group/s
+  group: name={{ item.name }} gid={{ item.gid }} state=present
+  with_items: "{{ system_groups }}"
+  become: yes
+
+- name: create user/s
+  user: uid={{ item.uid }} name={{ item.name }} group={{ item.group }} shell=/bin/bash state=present
+  with_items: "{{ system_users }}"
+  become: yes
+
+- name: authorize users public ssh keys
+  authorized_key: user={{ item.name }} key={{ lookup('file', 'roles/common/public_keys/{{ item.name }}') }}
+  with_items: "{{ system_users }}"
+  ignore_errors: yes
+  become: yes
+
+- name: create user/s project directory
+  file: path=/home/{{ item.name }}/projects/{{ project.path }}/web owner={{ item.name }}
+    group={{ item.group }} state=directory mode=0755
+  with_items: "{{ system_users }}"
+  become: yes

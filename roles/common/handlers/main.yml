@@ -1,0 +1,16 @@
+---
+- name: restart apache
+  service: name=apache2 state=restarted
+  become: yes
+
+- name: restart ssh
+  service: name=ssh state=restarted
+  become: yes
+
+- name: restart procps
+  service: name=procps state=restarted
+  become: yes
+
+- name: restart iptables
+  service: name=iptables-persistent state=restarted
+  become: yes
