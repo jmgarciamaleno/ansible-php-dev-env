@@ -23,7 +23,7 @@ Configured users are created in the system with ssh access through their public 
 
 ## Vagrant
 
-A Vagrantfile is included to create a local VM with ip 192.168.33.101 and an 'admin' user created. The 'admin' password is requested when the machine is created:
+A Vagrantfile is included to create a local VM with ip 192.168.33.101. An 'admin' user is added (password requested) when the machine is created:
 
 ```bash
 vagrant up
