@@ -15,9 +15,9 @@ Edit this files to configure your project/users/groups:
 
 - `roles/common/vars/project.yml`
 - `roles/common/vars/system-groups.yml`
-- `roles/common/vars/system-groups.yml`
+- `roles/common/vars/system-users.yml`
 
-Add the users public ssh keys to the `roles/common/public_keys/` directory. Each file name must be the same as the user.
+Add the users public ssh keys to the `roles/common/public_keys/` directory. Each file name must be the same as the user name.
 
 Configured users are created in the system with ssh access through their public ssh keys and apache virtual hosts are created for everyone (user.hostname).
 
