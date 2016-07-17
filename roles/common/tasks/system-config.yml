@@ -1,6 +1,13 @@
+---
 - name: configure locales
   locale_gen: name=es_ES.UTF-8 state=present
   become: yes
+
+- name: set timezone
+  # timezone: name=Europe/Madrid (will be available in Ansible 2.2.0)
+  command: timedatectl set-timezone 'Europe/Madrid'
+  become: yes
+  notify: restart crond
 
 - name: create group/s
   group: name={{ item.name }} gid={{ item.gid }} state=present
@@ -12,14 +19,14 @@
   with_items: "{{ system_users }}"
   become: yes
 
-- name: authorize users public ssh keys
-  authorized_key: user={{ item.name }} key={{ lookup('file', 'roles/common/public_keys/{{ item.name }}') }}
+- name: authorize user/s public ssh keys
+  authorized_key: user={{ item.name }} key={{ lookup('file', 'roles/common/public_keys/{{ item.name }}.pub') }}
   with_items: "{{ system_users }}"
   ignore_errors: yes
   become: yes
 
 - name: create user/s project directory
-  file: path=/home/{{ item.name }}/projects/{{ project.path }}/web owner={{ item.name }}
+  file: path=/home/{{ item.name }}/projects/{{ project_path }}/web owner={{ item.name }}
     group={{ item.group }} state=directory mode=0755
   with_items: "{{ system_users }}"
   become: yes

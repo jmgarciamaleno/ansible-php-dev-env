@@ -14,3 +14,7 @@
 - name: restart iptables
   service: name=iptables-persistent state=restarted
   become: yes
+
+- name: restart cron
+  service: name=cron state=restarted
+  become: yes

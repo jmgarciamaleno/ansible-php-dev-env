@@ -6,7 +6,7 @@ Vagrant.configure(2) do |config|
         uid   = 4000
         uname = 'admin'
         gid   = 4000
-        gname = 'edi'
+        gname = 'devs'
         shell = '/bin/bash'
         puts "Insert password for user '#{uname}' in guest machines: "
         `stty -echo`

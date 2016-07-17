@@ -1,3 +1,4 @@
+---
 - name: disable ssh root access
   lineinfile: dest=/etc/ssh/sshd_config regexp='^PermitRootLogin' line='PermitRootLogin no'
     backup=yes state=present

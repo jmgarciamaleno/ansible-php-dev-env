@@ -2,7 +2,6 @@
 # Vars.
 - include_vars: system-groups.yml
 - include_vars: system-users.yml
-- include_vars: project.yml
 - include_vars: network-security.yml
 - include_vars: php-in-html.yml
 

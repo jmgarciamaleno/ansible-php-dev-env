@@ -1,35 +1,36 @@
-- name: /etc/apache2/conf-enabled/security.conf - ServerTokens Prod
-  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^ServerTokens' line='ServerTokens Prod'
+---
+- name: /etc/apache2/conf-available/security.conf - ServerTokens Prod
+  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^ServerTokens' line='ServerTokens Prod'
     backup=yes state=present
   become: yes
   notify: restart apache
 
-- name: /etc/apache2/conf-enabled/security.conf - ServerSignature Off
-  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^ServerSignature' line='ServerSignature Off'
+- name: /etc/apache2/conf-available/security.conf - ServerSignature Off
+  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^ServerSignature' line='ServerSignature Off'
     backup=yes state=present
   become: yes
   notify: restart apache
 
-- name: /etc/apache2/conf-enabled/security.conf - TraceEnable Off
-  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^TraceEnable' line='TraceEnable Off'
+- name: /etc/apache2/conf-available/security.conf - TraceEnable Off
+  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^TraceEnable' line='TraceEnable Off'
     backup=yes state=present
   become: yes
   notify: restart apache
 
-- name: /etc/apache2/conf-enabled/security.conf - Header unset ETag
-  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^Header unset ETag'
+- name: /etc/apache2/conf-available/security.conf - Header unset ETag
+  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^Header unset ETag'
     line='Header unset ETag' backup=yes state=present
   become: yes
   notify: restart apache
 
-- name: /etc/apache2/conf-enabled/security.conf - FileETag None
-  lineinfile: dest=/etc/apache2/conf-enabled/security.conf regexp='^FileETag' line='FileETag None'
+- name: /etc/apache2/conf-available/security.conf - FileETag None
+  lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^FileETag' line='FileETag None'
     backup=yes state=present
   become: yes
   notify: restart apache
 
-- name: /etc/apache2/mods-enabled/php5.conf - Enable php in html
-  blockinfile: dest=/etc/apache2/mods-enabled/php5.conf block={{ php_in_html }} backup=yes
+- name: /etc/apache2/mods-available/php5.conf - Enable php in html
+  blockinfile: dest=/etc/apache2/mods-available/php5.conf block={{ php_in_html }} backup=yes
     state=present
   become: yes
   notify: restart apache
@@ -75,6 +76,19 @@
     /etc/modsecurity/modsecurity_crs_10_setup.conf
   become: yes
 
+- name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_50_outbound.conf
+  lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_50_outbound.conf regexp='^SecRuleRemoveById'
+    line='SecRuleRemoveById 970901,970015,970903' backup=yes state=present
+  become: yes
+  notify: restart apache
+
+- name: disable too exhaustive rules @ /etc/modsecurity/optional_rules/modsecurity_crs_16_session_hijacking.conf
+  lineinfile: dest=/etc/modsecurity/optional_rules/modsecurity_crs_16_session_hijacking.conf regexp='^SecRuleRemoveById'
+    line='SecRuleRemoveById 981054,981059,981060' backup=yes state=present
+  become: yes
+  notify: restart apache
+  tags: this
+
 - name: create base rules links
   shell: ls /etc/modsecurity/base_rules | xargs -I {} ln -sf /etc/modsecurity/base_rules/{} /etc/modsecurity/activated_rules/{}
   become: yes
@@ -107,7 +121,7 @@
 
 - name: set the DOSEmailNotify
   lineinfile: dest=/etc/apache2/mods-available/evasive.conf regexp='(^\s*DOSEmailNotify\s*)'
-    line='\1josemanuel.garcia@unidadeditorial.es' backrefs=yes state=present
+    line='\1admin@acme.com' backrefs=yes state=present
   become: yes
   notify: restart apache
 
@@ -116,3 +130,14 @@
     state=link
   become: yes
   notify: restart apache
+
+# Not so hard harden ...
+# - name: allow read access to the apache logs dir
+#   file: path=/var/log/apache2 mode=o+rx
+#   become: yes
+#
+# - name: write apache log files with read access
+#   lineinfile: dest=/etc/logrotate.d/apache2 regexp='create' line='        create 644 root adm' backup=yes
+#     state=present
+#   become: yes
+#   notify: restart apache

@@ -1,9 +1,14 @@
-# Ansible develop environment hosts file
+[project1-group]
+project1-dev-local ansible_host=192.168.33.101 ansible_user=admin
+project1-dev ansible_host=project1-dev.acme.com ansible_user=admin
 
-# Example to deploy in a local VM:
-#
-# [dev-env]
-# dev ansible_host=192.168.33.101 ansible_user=admin
+[project1-group:vars]
+project_path=acme/project1
+project_url=project1-dev.acme.com
 
-[dev-env]
-dev
+[project2-group]
+project2-dev ansible_host=project2-dev.acme.com ansible_user=admin
+
+[project2-group:vars]
+project_path=acme/project2
+project_url=project2-dev.acme.com

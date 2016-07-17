@@ -1,3 +1,4 @@
+---
 - name: copy our custom iptables ipv4 rules
   copy: src=rules.v4 dest=/etc/iptables/rules.v4 owner=root group=root mode=0644 backup=yes
   become: yes

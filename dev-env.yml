@@ -1,6 +1,30 @@
-# Ansible - Generic develop environment playbook.
-# Edit the var files in roles/common/vars/* to configure the project, groups and users values.
-- hosts: dev-env
+# Ansible - Generic PHP develop environment playbook.
+#
+# This playbook will provision the given hosts performing these main tasks:
+#
+#   - Update and harden the OS and the network.
+#   - Install and harden Apache2, PHP, composer and common develop tools.
+#   - Create the given users with allowed ssh access by their given public ssh keys.
+#   - Create virtual hosts for every given user (<USER>.<HOSTNAME>).
+#
+# An ssh connection to the remote hosts with sudo access is required.
+#
+# Usage:
+#
+# 1. Edit the '- hosts:' line, select which ones to provision (available hosts are in the hosts file).
+#    The given hosts may be a single host, a group or a list of comma-separated hosts/groups.
+#    E.g:
+#      - hosts: [project1-group]
+#      - hosts: project1-dev
+# 2. Edit:
+#      - ./roles/common/vars/system-groups.yml
+#      - ./roles/common/vars/system-users.yml
+# 3. Add the users public ssh keys to ./roles/common/public_keys with format <USER>.pub
+#      <USER> must coincide with the login name of the user.
+#
+# 4. Run: ansible-playbook -i hosts dev-env.yml --ask-become-pass --ask-pass
+---
+- hosts: project1-dev-local
 
   roles:
     - common
