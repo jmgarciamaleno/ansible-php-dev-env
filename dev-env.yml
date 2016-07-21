@@ -3,7 +3,7 @@
 # This playbook will provision the given hosts performing these main tasks:
 #
 #   - Update and harden the OS and the network.
-#   - Install and harden Apache2, PHP, composer and common develop tools.
+#   - Install and harden Apache2, PHP, composer, MySQL client and common develop tools.
 #   - Create the given users with allowed ssh access by their given public ssh keys.
 #   - Create virtual hosts for every given user (<USER>.<HOSTNAME>).
 #
