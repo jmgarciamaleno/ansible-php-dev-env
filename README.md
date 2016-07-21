@@ -8,6 +8,8 @@ Simple Ansible role to deploy a PHP develop environment.
 - Apache2 (basic security)
 - PHP 5.5.9 (basic security)
 - Composer
+- Symfony
+- MySQL client
 
 ## Configuration
 

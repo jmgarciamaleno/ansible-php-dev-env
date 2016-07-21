@@ -15,11 +15,15 @@
     - iptables-persistent
     - php5
     - php5-cli
+    - php5-dev
+    - php5-db
     - php5-fpm
     - php5-cgi
     - php5-curl
     - php5-mysql
     - php5-mcrypt
+    - php-pear
+    - mysql-client
     - apache2
     - libapache2-mod-php5
     - libapache2-mod-security2
