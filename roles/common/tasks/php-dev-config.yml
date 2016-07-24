@@ -1,4 +1,16 @@
 ---
+- name: configure php default_charset to utf8
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^;\s*default_charset\s*='
+    line='default_charset = "UTF-8"'
+    state=present
+  become: yes
+
+- name: configure php timezone
+  lineinfile: dest=/etc/php5/cli/php.ini regexp='^date.timezone\s*='
+    line='date.timezone = {{ system_timezone }}'
+    state=present
+  become: yes
+
 - name: /etc/php5/apache2/php.ini - Add exec,system,shell_exec,passthru to disable_functions
   lineinfile: dest=/etc/php5/apache2/php.ini regexp='(^disable_functions.*,$)'
     line='\1exec,system,shell_exec,passthru' backrefs=yes backup=yes state=present
@@ -10,14 +22,14 @@
   become: yes
   notify: restart apache
 
-- name: /etc/php5/apache2/php.ini - display_errors = Off
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^display_errors' line='display_errors = Off'
+- name: /etc/php5/apache2/php.ini - display_errors = On
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^display_errors' line='display_errors = On'
     state=present
   become: yes
   notify: restart apache
 
-- name: /etc/php5/apache2/php.ini - track_errors = Off
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^track_errors' line='track_errors = Off'
+- name: /etc/php5/apache2/php.ini - track_errors = On
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^track_errors' line='track_errors = On'
     state=present
   become: yes
   notify: restart apache

@@ -1,11 +1,11 @@
 ---
 - name: configure locales
-  locale_gen: name=es_ES.UTF-8 state=present
+  locale_gen: name={{ system_locale }} state=present
   become: yes
 
 - name: set timezone
-  # timezone: name=Europe/Madrid (will be available in Ansible 2.2.0)
-  command: timedatectl set-timezone 'Europe/Madrid'
+  # timezone: name={{ system_timezone }} (will be available in Ansible 2.2.0)
+  command: timedatectl set-timezone {{ system_timezone }}
   become: yes
   notify: restart crond
 

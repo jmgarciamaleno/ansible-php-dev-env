@@ -44,8 +44,9 @@
   command: cp /etc/modsecurity/modsecurity.conf-recommended /etc/modsecurity/modsecurity.conf
   become: yes
 
-- name: /etc/modsecurity/modsecurity.conf - SecRuleEngine On
-  lineinfile: dest=/etc/modsecurity/modsecurity.conf regexp='^SecRuleEngine' line='SecRuleEngine On'
+# Change this to ´SecruleEngine On´ to enable security.
+- name: /etc/modsecurity/modsecurity.conf - SecRuleEngine Off
+  lineinfile: dest=/etc/modsecurity/modsecurity.conf regexp='^SecRuleEngine' line='SecRuleEngine Off'
     backup=yes state=present
   become: yes
   notify: restart apache
@@ -76,25 +77,29 @@
     /etc/modsecurity/modsecurity_crs_10_setup.conf
   become: yes
 
+- name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_20_protocol_violations.conf
+  lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_20_protocol_violations.conf regexp='^SecRuleRemoveById'
+    line='SecRuleRemoveById 950109,958291' backup=yes state=present
+  become: yes
+
+- name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_21_protocol_anomalies.conf
+  lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_21_protocol_anomalies.conf regexp='^SecRuleRemoveById'
+    line='SecRuleRemoveById 960009,960015,960017' backup=yes state=present
+  become: yes
+
+- name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_30_http_policy.conf
+  lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_30_http_policy.conf regexp='^SecRuleRemoveById'
+    line='SecRuleRemoveById 960010' backup=yes state=present
+  become: yes
+
 - name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_50_outbound.conf
   lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_50_outbound.conf regexp='^SecRuleRemoveById'
     line='SecRuleRemoveById 970901,970015,970903' backup=yes state=present
   become: yes
   notify: restart apache
 
-- name: disable too exhaustive rules @ /etc/modsecurity/optional_rules/modsecurity_crs_16_session_hijacking.conf
-  lineinfile: dest=/etc/modsecurity/optional_rules/modsecurity_crs_16_session_hijacking.conf regexp='^SecRuleRemoveById'
-    line='SecRuleRemoveById 981054,981059,981060' backup=yes state=present
-  become: yes
-  notify: restart apache
-  tags: this
-
 - name: create base rules links
   shell: ls /etc/modsecurity/base_rules | xargs -I {} ln -sf /etc/modsecurity/base_rules/{} /etc/modsecurity/activated_rules/{}
-  become: yes
-
-- name: create optional rules links
-  shell: ls /etc/modsecurity/optional_rules | xargs -I {} ln -sf /etc/modsecurity/optional_rules/{} /etc/modsecurity/activated_rules/{}
   become: yes
 
 - name: add the rules to apache
