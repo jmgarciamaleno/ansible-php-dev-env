@@ -13,7 +13,7 @@
 
 - name: /etc/php5/apache2/php.ini - Add exec,system,shell_exec,passthru to disable_functions
   lineinfile: dest=/etc/php5/apache2/php.ini regexp='(^disable_functions.*,$)'
-    line='\1exec,system,shell_exec,passthru' backrefs=yes backup=yes state=present
+    line='\1exec,system,shell_exec,passthru' backrefs=yes state=present
   become: yes
   notify: restart apache
 

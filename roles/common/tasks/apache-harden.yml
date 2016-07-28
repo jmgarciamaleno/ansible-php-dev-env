@@ -1,36 +1,36 @@
 ---
 - name: /etc/apache2/conf-available/security.conf - ServerTokens Prod
   lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^ServerTokens' line='ServerTokens Prod'
-    backup=yes state=present
+    state=present
   become: yes
   notify: restart apache
 
 - name: /etc/apache2/conf-available/security.conf - ServerSignature Off
   lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^ServerSignature' line='ServerSignature Off'
-    backup=yes state=present
+    state=present
   become: yes
   notify: restart apache
 
 - name: /etc/apache2/conf-available/security.conf - TraceEnable Off
   lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^TraceEnable' line='TraceEnable Off'
-    backup=yes state=present
+    state=present
   become: yes
   notify: restart apache
 
 - name: /etc/apache2/conf-available/security.conf - Header unset ETag
   lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^Header unset ETag'
-    line='Header unset ETag' backup=yes state=present
+    line='Header unset ETag' state=present
   become: yes
   notify: restart apache
 
 - name: /etc/apache2/conf-available/security.conf - FileETag None
   lineinfile: dest=/etc/apache2/conf-available/security.conf regexp='^FileETag' line='FileETag None'
-    backup=yes state=present
+    state=present
   become: yes
   notify: restart apache
 
 - name: /etc/apache2/mods-available/php5.conf - Enable php in html
-  blockinfile: dest=/etc/apache2/mods-available/php5.conf block={{ php_in_html }} backup=yes
+  blockinfile: dest=/etc/apache2/mods-available/php5.conf block={{ php_in_html }}
     state=present
   become: yes
   notify: restart apache
@@ -47,7 +47,7 @@
 # Change this to ´SecruleEngine On´ to enable security.
 - name: /etc/modsecurity/modsecurity.conf - SecRuleEngine Off
   lineinfile: dest=/etc/modsecurity/modsecurity.conf regexp='^SecRuleEngine' line='SecRuleEngine Off'
-    backup=yes state=present
+    state=present
   become: yes
   notify: restart apache
 
@@ -79,22 +79,22 @@
 
 - name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_20_protocol_violations.conf
   lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_20_protocol_violations.conf regexp='^SecRuleRemoveById'
-    line='SecRuleRemoveById 950109,958291' backup=yes state=present
+    line='SecRuleRemoveById 950109,958291' state=present
   become: yes
 
 - name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_21_protocol_anomalies.conf
   lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_21_protocol_anomalies.conf regexp='^SecRuleRemoveById'
-    line='SecRuleRemoveById 960009,960015,960017' backup=yes state=present
+    line='SecRuleRemoveById 960009,960015,960017' state=present
   become: yes
 
 - name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_30_http_policy.conf
   lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_30_http_policy.conf regexp='^SecRuleRemoveById'
-    line='SecRuleRemoveById 960010' backup=yes state=present
+    line='SecRuleRemoveById 960010' state=present
   become: yes
 
 - name: disable too exhaustive rules @ /etc/modsecurity/base_rules/modsecurity_crs_50_outbound.conf
   lineinfile: dest=/etc/modsecurity/base_rules/modsecurity_crs_50_outbound.conf regexp='^SecRuleRemoveById'
-    line='SecRuleRemoveById 970901,970015,970903' backup=yes state=present
+    line='SecRuleRemoveById 970901,970015,970903' state=present
   become: yes
   notify: restart apache
 
@@ -114,7 +114,6 @@
 
 - name: enable rules in /etc/apache2/mods-available/evasive.conf
   replace: dest=/etc/apache2/mods-available/evasive.conf regexp='(^.*)#(.*$)' replace='\1\2'
-    backup=yes
   become: yes
   notify: restart apache
 
@@ -142,7 +141,7 @@
 #   become: yes
 #
 # - name: write apache log files with read access
-#   lineinfile: dest=/etc/logrotate.d/apache2 regexp='create' line='        create 644 root adm' backup=yes
+#   lineinfile: dest=/etc/logrotate.d/apache2 regexp='create' line='        create 644 root adm'
 #     state=present
 #   become: yes
 #   notify: restart apache
