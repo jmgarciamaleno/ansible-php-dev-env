@@ -1,43 +1,46 @@
 # Ansible PHP develop environment role
 
-Simple Ansible role to deploy a PHP develop environment.
+Simple Ansible role to deploy a PHP develop environment on Ubuntu Server 14.04.
 
-- Ubuntu 14.04.4
 - IPtables (basic security)
 - SSH server (basic security)
 - Apache2 (basic security)
 - PHP 5.5.9 (basic security)
 - Composer
-- Symfony
 - MySQL client
 
-## Configuration
+Configured users are created in the system with SSH access through their public SSH keys.
 
-Configure your hosts in the ```hosts``` file and select the ones to be provisioned in the ```dev-env.yml``` file. If you just want to test this playbook check the 'Vagrant' section below.
+Apache virtual hosts are created for every user (user.hostname).
 
-Edit this files to configure the users and groups that will be created in the provisioned hosts:
-
-- ```roles/common/vars/system-groups.yml```
-- ```roles/common/vars/system-users.yml```
-
-Add the users public ssh keys to the ```roles/common/public_keys/``` directory.
-For the ```john.doe``` user, the file must be ```john.doe.pub```.
-
-Configured users are created in the system with SSH access through their public SSH keys and apache virtual hosts are created for every user (user.hostname).
-
-## Vagrant
-
-A Vagrantfile is provided to create a local VM with ip 192.168.33.101.
-An ```admin``` user is added (password requested) when the machine is created, you can connect with the standard vagrant user too.
-
-```bash
-vagrant up
-```
+Apache *mod\_security* is installed but disabled by default due to often being too restrictive for a develop environment, even with base rules only activated.  
+To enable *mod\_security*, edit the ```roles/common/tasks/apache-harden.yml``` file and replace ```SecRuleEngine Off``` with ```SecRuleEngine On```.
 
 ## Usage
 
-Once the server is up and the SSH connection enabled, run:
+1. Edit the ```hosts``` file and fill it with your hosts data.
+
+2. Add the hosts to provision to the ```- hosts:``` line in ```php-dev-env.yml```.  
+   The given hosts may be a single host, a group or a list of comma-separated hosts/groups.
+   E.g:
+     - ```- hosts: [project1-group]```
+     - ```- hosts: project1-dev```
+
+3. Add your users and groups to the files:
+     - ```roles/common/vars/system-groups.yml```
+     - ```roles/common/vars/system-users.yml```
+
+4. Add the users public SSH keys to ```roles/common/public_keys/``` with format ```<USER>.pub```.  
+   ```<USER>``` must coincide with the login name of the user (e.g: john.doe.pub).
+
+5. Run: ```ansible-playbook -i hosts php-dev-env.yml --ask-become-pass --ask-pass```
+
+## Vagrant
+
+A Vagrantfile is provided to create a local VM with ip ```192.168.33.101``` and test this playbook against it.  
+An ```admin``` user is added (password requested) when the machine is created or you can use the standard ```vagrant``` user.  
+Run:
 
 ```bash
-ansible-playbook -i hosts dev-env.yml --ask-become-pass --ask-pass
+vagrant up
 ```

@@ -1,0 +1,6 @@
+# Ansible - Generic PHP develop environment playbook.
+---
+- hosts: project1-dev-local
+
+  roles:
+    - common
