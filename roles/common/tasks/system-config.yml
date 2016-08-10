@@ -7,7 +7,7 @@
   # timezone: name={{ system_timezone }} (will be available in Ansible 2.2.0)
   command: timedatectl set-timezone {{ system_timezone }}
   become: yes
-  notify: restart crond
+  notify: restart cron
 
 - name: create group/s
   group: name={{ item.name }} gid={{ item.gid }} state=present
