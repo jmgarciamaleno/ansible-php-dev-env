@@ -1,13 +1,31 @@
 ---
-- name: configure php default_charset to utf8
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^;\s*default_charset\s*='
-    line='default_charset = "UTF-8"'
+- name: /etc/php5/cli/php.ini - date.timezone = Europe/Madrid
+  lineinfile: dest=/etc/php5/cli/php.ini regexp='^date.timezone\s*='
+    line='date.timezone = Europe/Madrid'
     state=present
   become: yes
 
-- name: configure php timezone
-  lineinfile: dest=/etc/php5/cli/php.ini regexp='^date.timezone\s*='
-    line='date.timezone = {{ system_timezone }}'
+- name: /etc/php5/cgi/php.ini - date.timezone = Europe/Madrid
+  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^date.timezone\s*='
+    line='date.timezone = Europe/Madrid'
+    state=present
+  become: yes
+
+- name: /etc/php5/fpm/php.ini - date.timezone = Europe/Madrid
+  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^date.timezone\s*='
+    line='date.timezone = Europe/Madrid'
+    state=present
+  become: yes
+
+- name: /etc/php5/apache2/php.ini - date.timezone = Europe/Madrid
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^date.timezone\s*='
+    line='date.timezone = Europe/Madrid'
+    state=present
+  become: yes
+
+- name: /etc/php5/apache2/php.ini - default_charset = "UTF-8"
+  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^default_charset\s*='
+    line='default_charset = "UTF-8"'
     state=present
   become: yes
 
