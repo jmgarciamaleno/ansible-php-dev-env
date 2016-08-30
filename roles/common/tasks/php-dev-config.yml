@@ -57,3 +57,57 @@
     state=present
   become: yes
   notify: restart apache
+
+- name: /etc/php5/cgi/php.ini - display_errors = On
+  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^display_errors' line='display_errors = On'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/cgi/php.ini - track_errors = On
+  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^track_errors' line='track_errors = On'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/cgi/php.ini - html_errors = Off
+  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^html_errors' line='html_errors = Off'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/cli/php.ini - display_errors = On
+  lineinfile: dest=/etc/php5/cli/php.ini regexp='^display_errors' line='display_errors = On'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/cli/php.ini - track_errors = On
+  lineinfile: dest=/etc/php5/cli/php.ini regexp='^track_errors' line='track_errors = On'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/cli/php.ini - html_errors = Off
+  lineinfile: dest=/etc/php5/cli/php.ini regexp='^html_errors' line='html_errors = Off'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/fpm/php.ini - display_errors = On
+  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^display_errors' line='display_errors = On'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/fpm/php.ini - track_errors = On
+  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^track_errors' line='track_errors = On'
+    state=present
+  become: yes
+  notify: restart apache
+
+- name: /etc/php5/fpm/php.ini - html_errors = Off
+  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^html_errors' line='html_errors = Off'
+    state=present
+  become: yes
+  notify: restart apache
