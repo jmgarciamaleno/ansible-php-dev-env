@@ -1,6 +1,10 @@
 # Ansible - Generic PHP develop environment playbook.
 ---
-- hosts: project1-dev-local
+- hosts: project-dev-local
+
+  # The web server not selected will be disabled.
+  vars:
+    web_server: nginx # apache2 | nginx
 
   roles:
     - common

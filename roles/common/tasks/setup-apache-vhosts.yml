@@ -1,0 +1,24 @@
+---
+- name: Create apache virtual hosts.
+  template:
+    src: apache-vhost.j2
+    dest: /etc/apache2/sites-available/{{ item.name }}.{{ project_url }}.conf
+    mode: 0755
+  with_items: "{{ system_users }}"
+  notify: Restart web server.
+
+- name: Enable the new apache virtual hosts.
+  file:
+    src: /etc/apache2/sites-available/{{ item.name }}.{{ project_url }}.conf
+    dest: /etc/apache2/sites-enabled/{{ item.name }}.{{ project_url }}.conf
+    state: link
+  with_items: "{{ system_users }}"
+  notify: Restart web server.
+
+# Apache virtual hosts plan B.
+- name: Create links inside apache document root to the users project/web folders.
+  file:
+    src: /home/{{ item.name }}/projects/{{ project_path }}/web
+    dest: /var/www/html/{{ item.name }}
+    state: link
+  with_items: "{{ system_users }}"

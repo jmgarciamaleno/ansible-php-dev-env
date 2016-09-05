@@ -1,113 +1,166 @@
 ---
+# Cli
 - name: /etc/php5/cli/php.ini - date.timezone = Europe/Madrid
-  lineinfile: dest=/etc/php5/cli/php.ini regexp='^date.timezone\s*='
-    line='date.timezone = Europe/Madrid'
-    state=present
-  become: yes
-
-- name: /etc/php5/cgi/php.ini - date.timezone = Europe/Madrid
-  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^date.timezone\s*='
-    line='date.timezone = Europe/Madrid'
-    state=present
-  become: yes
-
-- name: /etc/php5/fpm/php.ini - date.timezone = Europe/Madrid
-  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^date.timezone\s*='
-    line='date.timezone = Europe/Madrid'
-    state=present
-  become: yes
-
-- name: /etc/php5/apache2/php.ini - date.timezone = Europe/Madrid
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^date.timezone\s*='
-    line='date.timezone = Europe/Madrid'
-    state=present
-  become: yes
-
-- name: /etc/php5/apache2/php.ini - default_charset = "UTF-8"
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^default_charset\s*='
-    line='default_charset = "UTF-8"'
-    state=present
-  become: yes
-
-- name: /etc/php5/apache2/php.ini - Add exec,system,shell_exec,passthru to disable_functions
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='(^disable_functions.*,$)'
-    line='\1exec,system,shell_exec,passthru' backrefs=yes state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/apache2/php.ini - expose_php = Off
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^expose_php' line='expose_php = Off' state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/apache2/php.ini - display_errors = On
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^display_errors' line='display_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/apache2/php.ini - track_errors = On
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^track_errors' line='track_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/apache2/php.ini - html_errors = Off
-  lineinfile: dest=/etc/php5/apache2/php.ini regexp='^html_errors' line='html_errors = Off'
-    state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/cgi/php.ini - display_errors = On
-  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^display_errors' line='display_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/cgi/php.ini - track_errors = On
-  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^track_errors' line='track_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
-
-- name: /etc/php5/cgi/php.ini - html_errors = Off
-  lineinfile: dest=/etc/php5/cgi/php.ini regexp='^html_errors' line='html_errors = Off'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/cli/php.ini
+    regexp: '^date.timezone'
+    line: 'date.timezone = Europe/Madrid'
+    state: present
 
 - name: /etc/php5/cli/php.ini - display_errors = On
-  lineinfile: dest=/etc/php5/cli/php.ini regexp='^display_errors' line='display_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/cli/php.ini
+    regexp: '^display_errors'
+    line: 'display_errors = On'
+    state: present
+  notify: Restart web server.
 
 - name: /etc/php5/cli/php.ini - track_errors = On
-  lineinfile: dest=/etc/php5/cli/php.ini regexp='^track_errors' line='track_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/cli/php.ini
+    regexp: '^track_errors'
+    line: 'track_errors = On'
+    state: present
+  notify: Restart web server.
 
 - name: /etc/php5/cli/php.ini - html_errors = Off
-  lineinfile: dest=/etc/php5/cli/php.ini regexp='^html_errors' line='html_errors = Off'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/cli/php.ini
+    regexp: '^html_errors'
+    line: 'html_errors = Off'
+    state: present
+  notify: Restart web server.
+
+# Cgi
+- name: /etc/php5/cgi/php.ini - date.timezone = Europe/Madrid
+  lineinfile:
+    dest: /etc/php5/cgi/php.ini
+    regexp: '^date.timezone'
+    line: 'date.timezone = Europe/Madrid'
+    state: present
+
+- name: /etc/php5/cgi/php.ini - display_errors = On
+  lineinfile:
+    dest: /etc/php5/cgi/php.ini
+    regexp: '^display_errors'
+    line: 'display_errors = On'
+    state: present
+  notify: Restart web server.
+
+- name: /etc/php5/cgi/php.ini - track_errors = On
+  lineinfile:
+    dest: /etc/php5/cgi/php.ini
+    regexp: '^track_errors'
+    line: 'track_errors = On'
+    state: present
+  notify: Restart web server.
+
+- name: /etc/php5/cgi/php.ini - html_errors = Off
+  lineinfile:
+    dest: /etc/php5/cgi/php.ini
+    regexp: '^html_errors'
+    line: 'html_errors = Off'
+    state: present
+  notify: Restart web server.
+
+# Fpm
+- name: /etc/php5/fpm/php.ini - date.timezone = Europe/Madrid
+  lineinfile:
+    dest: /etc/php5/fpm/php.ini
+    regexp: '^date.timezone'
+    line: 'date.timezone = Europe/Madrid'
+    state: present
 
 - name: /etc/php5/fpm/php.ini - display_errors = On
-  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^display_errors' line='display_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/fpm/php.ini
+    regexp: '^display_errors'
+    line: 'display_errors = On'
+    state: present
+  notify: Restart web server.
 
 - name: /etc/php5/fpm/php.ini - track_errors = On
-  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^track_errors' line='track_errors = On'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/fpm/php.ini
+    regexp: '^track_errors'
+    line: 'track_errors = On'
+    state: present
+  notify: Restart web server.
 
 - name: /etc/php5/fpm/php.ini - html_errors = Off
-  lineinfile: dest=/etc/php5/fpm/php.ini regexp='^html_errors' line='html_errors = Off'
-    state=present
-  become: yes
-  notify: restart apache
+  lineinfile:
+    dest: /etc/php5/fpm/php.ini
+    regexp: '^html_errors'
+    line: 'html_errors = Off'
+    state: present
+  notify: Restart web server.
+
+# Apache2
+- name: /etc/php5/apache2/php.ini - date.timezone = Europe/Madrid
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '^date.timezone'
+    line: 'date.timezone = Europe/Madrid'
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+
+- name: /etc/php5/apache2/php.ini - default_charset = "UTF-8"
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '^default_charset'
+    line: 'default_charset = "UTF-8"'
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+
+- name: /etc/php5/apache2/php.ini - Add exec,system,shell_exec,passthru to disable_functions
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '(^disable_functions.*,$)'
+    line: '\1exec,system,shell_exec,passthru'
+    backrefs: yes
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+  notify: Restart web server.
+
+- name: /etc/php5/apache2/php.ini - expose_php = Off
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '^expose_php'
+    line: 'expose_php = Off'
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+  notify: Restart web server.
+
+- name: /etc/php5/apache2/php.ini - display_errors = On
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '^display_errors'
+    line: 'display_errors = On'
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+  notify: Restart web server.
+
+- name: /etc/php5/apache2/php.ini - track_errors = On
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '^track_errors'
+    line: 'track_errors = On'
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+  notify: Restart web server.
+
+- name: /etc/php5/apache2/php.ini - html_errors = Off
+  lineinfile:
+    dest: /etc/php5/apache2/php.ini
+    regexp: '^html_errors'
+    line: 'html_errors = Off'
+    state: present
+  ignore_errors: yes
+  when: web_server == 'apache2'
+  notify: Restart web server.

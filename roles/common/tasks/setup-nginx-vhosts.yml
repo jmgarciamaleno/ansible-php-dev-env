@@ -1,0 +1,24 @@
+---
+- name: Create nginx virtual hosts.
+  template:
+    src: nginx-vhost.j2
+    dest: /etc/nginx/sites-available/{{ item.name }}.{{ project_url }}.conf
+    mode: 0755
+  with_items: "{{ system_users }}"
+  notify: Restart web server.
+
+- name: Enable the new nginx virtual hosts.
+  file:
+    src: /etc/nginx/sites-available/{{ item.name }}.{{ project_url }}.conf
+    dest: /etc/nginx/sites-enabled/{{ item.name }}.{{ project_url }}.conf
+    state: link
+  with_items: "{{ system_users }}"
+  notify: Restart web server.
+
+# Nginx virtual hosts plan B.
+- name: Create links inside nginx document root to the users project/web folders.
+  file:
+    src: /home/{{ item.name }}/projects/{{ project_path }}/web
+    dest: /usr/share/nginx/html/{{ item.name }}
+    state: link
+  with_items: "{{ system_users }}"

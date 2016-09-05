@@ -3,13 +3,22 @@
 - include_vars: system-groups.yml
 - include_vars: system-users.yml
 - include_vars: network-security.yml
-- include_vars: php-in-html.yml
+- include_vars: apache-php-in-html.yml
+  when: web_server == 'apache2'
+- include_vars: nginx.yml
+  when: web_server == 'nginx'
 
 # Tasks.
-- include: system-harden.yml
-- include: system-config.yml
-- include: installation.yml
-- include: iptables-harden.yml
+- include: harden-system.yml
+- include: setup-system.yml
+- include: install-common.yml
+- include: harden-iptables.yml
+- include: install-apache.yml
+  when: web_server == 'apache2'
+- include: setup-apache-vhosts.yml
+  when: web_server == 'apache2'
 - include: php-dev-config.yml
-- include: apache-harden.yml
-- include: virtual-hosts.yml
+- include: install-nginx.yml
+  when: web_server == 'nginx'
+- include: setup-nginx-vhosts.yml
+  when: web_server == 'nginx'

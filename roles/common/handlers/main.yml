@@ -1,20 +1,30 @@
 ---
-- name: restart apache
-  service: name=apache2 state=restarted
-  become: yes
+- name: Restart ssh.
+  service:
+    name: ssh
+    state: restarted
 
-- name: restart ssh
-  service: name=ssh state=restarted
-  become: yes
+- name: Restart procps.
+  service:
+    name: procps
+    state: restarted
 
-- name: restart procps
-  service: name=procps state=restarted
-  become: yes
+- name: Restart iptables.
+  service:
+    name: iptables-persistent
+    state: restarted
 
-- name: restart iptables
-  service: name=iptables-persistent state=restarted
-  become: yes
+- name: Restart cron.
+  service:
+    name: cron
+    state: restarted
 
-- name: restart cron
-  service: name=cron state=restarted
-  become: yes
+- name: Reload nginx.
+  service:
+    name: nginx
+    state: reloaded
+
+- name: Restart web server.
+  service:
+    name: "{{ web_server }}"
+    state: restarted

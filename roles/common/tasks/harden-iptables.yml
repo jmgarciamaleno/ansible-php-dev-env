@@ -1,0 +1,20 @@
+---
+- name: Copy our custom iptables ipv4 rules.
+  copy:
+    src: rules.v4
+    dest: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: Restart iptables.
+
+- name: Copy our custom iptables ipv6 rules.
+  copy:
+    src: rules.v6
+    dest: /etc/iptables/rules.v6
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: Restart iptables.

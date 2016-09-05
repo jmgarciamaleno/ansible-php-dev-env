@@ -1,0 +1,43 @@
+---
+- name: Disable nginx.
+  service:
+    name: nginx
+    state: stopped
+    enabled: no
+  ignore_errors: yes
+
+- name: Install apache.
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apache2
+    - libapache2-mod-php5
+  notify: Restart web server.
+
+- name: Allow access for everyone to the apache logs dir.
+  file:
+    path: /var/log/apache2
+    mode: a+rx
+
+- name: Write apache log files with read access for everyone.
+  lineinfile:
+    dest: /etc/logrotate.d/apache2
+    regexp: 'create'
+    line: '        create 644 root adm'
+    state: present
+  notify: Restart web server.
+
+- name: Allow read access for everyone to the default access and error logs.
+  file:
+    path: /var/log/apache2/{{ item }}
+    mode: a+r
+  with_items:
+    - access.log
+    - error.log
+
+- name: Enable apache.
+  service:
+    name: apache2
+    state: started
+    enabled: yes

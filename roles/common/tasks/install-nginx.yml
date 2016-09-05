@@ -1,0 +1,60 @@
+---
+- name: Disable apache.
+  service:
+    name: apache2
+    state: stopped
+    enabled: no
+  ignore_errors: yes
+
+- name: Install nginx.
+  apt:
+    name: nginx
+    state: installed
+  notify: Restart web server.
+
+- name: Copy nginx config.
+  template:
+    src: nginx-conf.j2
+    dest: "{{ nginx_conf_file_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+    backup: yes
+  notify: Reload nginx.
+
+- name: Copy nginx default server config.
+  copy:
+    src: nginx-default.j2
+    dest: "{{ nginx_default_vhost_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+    backup: yes
+  notify: Reload nginx.
+
+- name: Allow access for everyone to the nginx logs dir.
+  file:
+    path: /var/log/nginx
+    mode: o+rx
+
+- name: Write nginx log files with read access for everyone.
+  lineinfile:
+    dest: /etc/logrotate.d/nginx
+    regexp: 'create'
+    line: '        create 0644 www-data adm'
+    state: present
+  notify: Restart web server.
+
+- name: Allow read access for everyone to the default access and error logs.
+  file:
+    path: /var/log/nginx/{{ item }}
+    mode: a+r
+  with_items:
+    - access.log
+    - error.log
+
+- name: Enable nginx.
+  service:
+    name: nginx
+    state: started
+    enabled: yes

@@ -1,0 +1,70 @@
+---
+- name: Configure locales.
+  locale_gen:
+    name: "{{ system_locale }}"
+    state: present
+
+- name: Set timezone.
+  # timezone:
+  #   name: "{{ system_timezone }}" (will be available in Ansible 2.2.0)
+  command: timedatectl set-timezone "{{ system_timezone }}"
+  notify: Restart cron.
+
+- name: Create group/s.
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+    state: present
+  with_items: "{{ system_groups }}"
+
+- name: Create user/s.
+  user:
+    uid: "{{ item.uid }}"
+    name: "{{ item.name }}"
+    group: "{{ item.group }}"
+    shell: /bin/bash
+    state: present
+  with_items: "{{ system_users }}"
+
+- name: Authorize user/s public ssh keys.
+  authorized_key:
+    user: "{{ item.name }}"
+    key: "{{ lookup('file', 'roles/common/public_keys/{{ item.name }}.pub') }}"
+  with_items: "{{ system_users }}"
+  ignore_errors: yes
+
+- name: Create user/s project directory.
+  file:
+    path: /home/{{ item.name }}/projects/{{ project_path }}/web
+    owner: "{{ item.name }}"
+    group: "{{ item.group }}"
+    state: directory
+    mode: 0755
+  with_items: "{{ system_users }}"
+  ignore_errors: yes
+
+- name: Create and enable the swap file.
+  shell: "fallocate -l {{ ansible_memtotal_mb * 2 }}M /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile"
+  args:
+    creates: /swapfile
+
+- name: Make the swap file permanent.
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '^/swapfile'
+    line: '/swapfile   none    swap    sw    0   0'
+    state: present
+
+- name: Improve swappiness.
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: '^vm.swappiness'
+    line: 'vm.swappiness: 10'
+    state: present
+
+- name: Improve cache pressure.
+  lineinfile:
+    dest: /etc/sysctl.conf
+    regexp: '^vm.vfs_cache_pressure'
+    line: 'vm.vfs_cache_pressure :  50'
+    state: present
