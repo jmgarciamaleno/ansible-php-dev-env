@@ -44,8 +44,10 @@ The web server logs are created with read access for every user.
 
 ## Vagrant
 
-A Vagrantfile is provided to create a local VM (Virtual Box required) and ip ```192.168.33.101``` and test this playbook against it.
+A Vagrantfile is provided to create a local VM (Virtual Box required) with ip ```192.168.33.101```, to test this playbook against it.
 
 An ```admin``` user is added (password requested) when the machine is created or you can use the standard ```vagrant``` user.
 
 Run: ```vagrant up```
+
+This code is distributed under the MIT license: [LICENSE](LICENSE).
