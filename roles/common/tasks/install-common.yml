@@ -1,4 +1,8 @@
 ---
+- name: Add ondrej/php repository.
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+
 - name: Apt update.
   apt:
     update_cache: yes
@@ -15,21 +19,17 @@
     - tree
     - unzip
     - iptables-persistent
-    - php5
-    - php5-cli
-    - php5-dev
-    - php5-fpm
-    - php5-cgi
-    - php5-curl
-    - php5-mysql
-    - php5-mcrypt
+    - php5.6
+    - php5.6-cgi
+    - php5.6-cli
+    - php5.6-curl
+    - php5.6-dev
+    - php5.6-fpm
+    - php5.6-mysql
+    - php5.6-mcrypt
+    - php5.6-xml
     - php-pear
     - mysql-client
-
-# For some reason it doesn´t get enabled after installation.
-- name: Enable php5-mcrypt.
-  command: php5enmod mcrypt
-  notify: Restart web server.
 
 - name: Install symfony.
   get_url:
@@ -46,3 +46,11 @@
     mode: 0755
     force: no
   ignore_errors: yes
+
+- name: Allow PHP code inside HTML over FPM.
+  lineinfile:
+    dest: /etc/php/5.6/fpm/pool.d/www.conf
+    regexp: '^security.limit_extensions'
+    line: 'security.limit_extensions = .php .php3 .php4 .php5 .html'
+    state: present
+  notify: Restart php-fpm.

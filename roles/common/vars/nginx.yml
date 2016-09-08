@@ -9,7 +9,7 @@ nginx_vhost_path: /etc/nginx/sites-enabled
 nginx_default_vhost_path: /etc/nginx/sites-available/default
 nginx_user: "www-data"
 
-nginx_worker_processes: "1"
+nginx_worker_processes: "{{ ansible_processor_cores }}"
 nginx_worker_connections: "1024"
 nginx_multi_accept: "off"
 

@@ -4,8 +4,8 @@ Simple Ansible role to deploy a security-relaxed PHP develop environment on Ubun
 
 - IPtables (basic security)
 - SSH server (basic security)
-- Nginx (default) or Apache2
-- PHP 5.5.9
+- Nginx or Apache2
+- PHP 5.6
 - MySQL client
 - Git
 - Composer
@@ -44,10 +44,14 @@ The web server logs are created with read access for every user.
 
 ## Vagrant
 
-A Vagrantfile is provided to create a local VM (Virtual Box required) with ip ```192.168.33.101```, to test this playbook against it.
+A Vagrantfile is provided to create a local VM (Vagrant and Virtual Box required) with ip ```192.168.33.101```, to test this playbook against it.
 
-An ```admin``` user is added (password requested) when the machine is created or you can use the standard ```vagrant``` user.
+An ```admin``` user is added (password requested) when the machine is created. You can use the standard ```vagrant``` user too.
 
-Run: ```vagrant up```
+Usage: ```vagrant up```
+
+## Credits / License
+
+Credits to [Jeff Geerling - Ansible role nginx](https://github.com/geerlingguy/ansible-role-nginx).
 
 This code is distributed under the MIT license: [LICENSE](LICENSE).

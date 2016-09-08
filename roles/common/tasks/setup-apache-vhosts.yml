@@ -21,4 +21,5 @@
     src: /home/{{ item.name }}/projects/{{ project_path }}/web
     dest: /var/www/html/{{ item.name }}
     state: link
+    force: yes
   with_items: "{{ system_users }}"

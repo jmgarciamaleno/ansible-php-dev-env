@@ -1,25 +1,25 @@
 # Vagrant - Dev Env
 Vagrant.configure(2) do |config|
 
-    # User that will be created with sudo rights on the VM.
+    # This user will be created with sudo rights on the VM.
     if ARGV[0] == "up" or ARGV[0] == "provision"
         uid   = 4000
         uname = 'admin'
         gid   = 4000
         gname = 'devs'
         shell = '/bin/bash'
-        puts "Insert password for user '#{uname}' in guest machines: "
+        puts "Insert password for the user '#{uname}' in guest machines: "
         `stty -echo`
         pwd = $stdin.gets.chomp
         pwd = `perl -e 'print crypt("#{pwd}", "salt")'`
         `stty echo`
     end
 
-    # Dev Env
+    # Dev Env. The current user public SSH key will be authorized in the VM.
     config.vm.define "dev" do |dev|
         dev.vm.box = "ubuntu/trusty64"
         dev.vm.provider "virtualbox" do |v|
-            v.memory = 512
+            v.memory = 128
         end
         dev.vm.hostname = "dev"
         dev.vm.network "private_network", ip: "192.168.33.101"

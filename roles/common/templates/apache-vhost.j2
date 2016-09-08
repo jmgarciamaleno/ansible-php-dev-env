@@ -1,5 +1,6 @@
 <VirtualHost *:80>
     DocumentRoot /home/{{ item.name }}/projects/{{ project_path }}/web
+
     ServerName {{ item.name }}.{{ project_url }}
     ServerAlias www.{{ item.name }}.{{ project_url }}
 

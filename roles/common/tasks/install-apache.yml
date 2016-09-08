@@ -1,10 +1,14 @@
 ---
+- name: Check nginx service.
+  stat: path=/etc/init.d/nginx
+  register: nginx_status
+
 - name: Disable nginx.
   service:
     name: nginx
     state: stopped
     enabled: no
-  ignore_errors: yes
+  when: nginx_status.stat.exists
 
 - name: Install apache.
   apt:
@@ -12,8 +16,31 @@
     state: present
   with_items:
     - apache2
-    - libapache2-mod-php5
+    - apache2-mpm-event
+    - libapache2-mod-fastcgi
   notify: Restart web server.
+
+- name: Enable apache modules.
+  apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - actions
+    - fastcgi
+    - alias
+  notify: Restart web server.
+
+- name: Enable apache php-fpm config.
+  command: a2enconf php5.6-fpm
+  notify: Restart web server.
+
+- name: Add FastCGI block to PHP-FPM config.
+  blockinfile:
+    dest: /etc/apache2/conf-available/php5.6-fpm.conf
+    block: "{{ apache_php_fpm }}"
+    state: present
+    backup: yes
+  notify: Restart php-fpm.
 
 - name: Allow access for everyone to the apache logs dir.
   file:

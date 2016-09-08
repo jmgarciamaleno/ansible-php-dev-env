@@ -33,16 +33,6 @@
   with_items: "{{ system_users }}"
   ignore_errors: yes
 
-- name: Create user/s project directory.
-  file:
-    path: /home/{{ item.name }}/projects/{{ project_path }}/web
-    owner: "{{ item.name }}"
-    group: "{{ item.group }}"
-    state: directory
-    mode: 0755
-  with_items: "{{ system_users }}"
-  ignore_errors: yes
-
 - name: Create and enable the swap file.
   shell: "fallocate -l {{ ansible_memtotal_mb * 2 }}M /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile"
   args:

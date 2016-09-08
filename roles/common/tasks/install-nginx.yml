@@ -1,10 +1,14 @@
 ---
+- name: Check apache service.
+  stat: path=/etc/init.d/apache2
+  register: apache2_status
+
 - name: Disable apache.
   service:
     name: apache2
     state: stopped
     enabled: no
-  ignore_errors: yes
+  when: apache2_status.stat.exists
 
 - name: Install nginx.
   apt:
@@ -23,7 +27,7 @@
   notify: Reload nginx.
 
 - name: Copy nginx default server config.
-  copy:
+  template:
     src: nginx-default.j2
     dest: "{{ nginx_default_vhost_path }}"
     owner: root
@@ -41,7 +45,7 @@
   lineinfile:
     dest: /etc/logrotate.d/nginx
     regexp: 'create'
-    line: '        create 0644 www-data adm'
+    line: "        create 0644 {{ nginx_user }} {{ root_group }}"
     state: present
   notify: Restart web server.
 

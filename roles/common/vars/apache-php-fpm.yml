@@ -1,0 +1,11 @@
+---
+apache_php_fpm: |
+  <IfModule mod_fastcgi.c>
+      AddHandler php5.6-fcgi .php .html
+      Action php5.6-fcgi /php5.6-fcgi
+      Alias /php5.6-fcgi /usr/lib/cgi-bin/php5.6
+      FastCgiExternalServer /usr/lib/cgi-bin/php5.6 -socket /var/run/php/php5.6-fpm.sock -pass-header Authorization
+      <Directory /usr/lib/cgi-bin>
+          Require all granted
+      </Directory>
+  </IfModule>

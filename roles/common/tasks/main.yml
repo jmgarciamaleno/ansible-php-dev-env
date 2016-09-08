@@ -3,7 +3,7 @@
 - include_vars: system-groups.yml
 - include_vars: system-users.yml
 - include_vars: network-security.yml
-- include_vars: apache-php-in-html.yml
+- include_vars: apache-php-fpm.yml
   when: web_server == 'apache2'
 - include_vars: nginx.yml
   when: web_server == 'nginx'
