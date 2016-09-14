@@ -14,6 +14,16 @@ server {
         try_files $uri $uri/ =404;
     }
 
+    # Symfony.
+    location ~ ^/(app|app_dev|config)\.php(/|$) {
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_pass unix:/var/run/php/php5.6-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+        include fastcgi_params;
+    }
+
+    # PHP files.
     location ~ \.php$ {
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
@@ -23,6 +33,7 @@ server {
         include fastcgi_params;
     }
 
+    # PHP inside HTML.
     location ~ \.html$ {
         try_files $uri =404;
         fastcgi_split_path_info ^(.+\.html)(/.+)$;

@@ -8,7 +8,7 @@
   notify: Restart ssh.
 
 - name: Limit su access to sudoers.
-  shell: dpkg-statoverride --update --add root sudo 4750 /bin/su
+  command: dpkg-statoverride --update --add root sudo 4750 /bin/su
   ignore_errors: yes
 
 - name: Harden ip network security.
