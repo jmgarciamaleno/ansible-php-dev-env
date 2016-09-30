@@ -7,7 +7,7 @@ server {
 
     index index.php index.html index.htm;
 
-    access_log  /var/log/nginx/{{ item.name }}-acces.log;
+    access_log /var/log/nginx/{{ item.name }}-acces.log;
     error_log  /var/log/nginx/{{ item.name }}-error.log;
 
     location / {

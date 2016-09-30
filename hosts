@@ -2,12 +2,12 @@
 
 # Project hosts
 [project-group]
-project-dev-local ansible_host=192.168.33.101 ansible_user=admin
-project-dev ansible_host=project-dev.acme.net ansible_user=admin
+project-dev       ansible_host=project-dev.company.org ansible_user=admin
+project-dev-local ansible_host=192.168.33.101          ansible_user=admin
 
 # Project variables
 [project-group:vars]
 system_locale=es_ES.UTF-8
 system_timezone=Europe/Madrid
-project_path=acme/project
-project_url=project-dev.acme.net
+project_path=company/project
+project_url=project-dev.company.org
