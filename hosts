@@ -7,6 +7,7 @@ project-dev-local ansible_host=192.168.33.101          ansible_user=admin
 
 # Project variables
 [project-group:vars]
+system_language=es_ES
 system_locale=es_ES.UTF-8
 system_timezone=Europe/Madrid
 project_path=company/project
