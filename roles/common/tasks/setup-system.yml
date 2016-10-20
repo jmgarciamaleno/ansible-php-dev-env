@@ -1,16 +1,14 @@
 ---
-- name: Install configured locale.
+- name: Generate locale.
   locale_gen:
     name: "{{ system_locale }}"
     state: present
 
-- name: Locale tweak.
-  blockinfile:
+- name: Set default language and locale.
+  template:
+    src: default-locale.j2
     dest: /etc/default/locale
-    block: |
-      LANGUAGE=en_US
-      LC_ALL=en_US.UTF-8
-    create: yes
+    backup: yes
 
 - name: Set timezone.
   # timezone:
@@ -24,6 +22,42 @@
     gid: "{{ item.gid }}"
     state: present
   with_items: "{{ system_groups }}"
+
+- name: Remove unwanted user/s
+  user:
+    name: "{{ item.name }}"
+    state: absent
+    remove: yes
+  with_items: "{{ remove_users }}"
+  when: remove_users is defined and remove_users is not none
+
+- name: Remove the unwanted user/s apache sites-available
+  file:
+    path: /etc/apache2/sites-available/{{ item.name }}.{{ project_url }}.conf
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: remove_users is defined and remove_users is not none
+
+- name: Remove the unwanted user/s apache sites-enabled
+  file:
+    path: /etc/apache2/sites-enabled/{{ item.name }}.{{ project_url }}.conf
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: remove_users is defined and remove_users is not none
+
+- name: Remove the unwanted user/s nginx sites-available
+  file:
+    path: /etc/nginx/sites-available/{{ item.name }}.{{ project_url }}.conf
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: remove_users is defined and remove_users is not none
+
+- name: Remove the unwanted user/s nginx sites-enabled
+  file:
+    path: /etc/nginx/sites-enabled/{{ item.name }}.{{ project_url }}.conf
+    state: absent
+  with_items: "{{ remove_users }}"
+  when: remove_users is defined and remove_users is not none
 
 - name: Create user/s.
   user:

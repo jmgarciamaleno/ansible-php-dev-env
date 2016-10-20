@@ -1,0 +1,4 @@
+---
+# List of users that will be removed from the system.
+remove_users:
+  # - { name: 'john.doe', uid: 4001, group: 'devs' }
